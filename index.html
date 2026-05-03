@@ -3,476 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Hungry Bites | بيتس - جدة بحره</title>
-  <!-- Fonts: Cairo + Montserrat -->
+  <title>Hungry Bites | بيتس - بحرة</title>
+  
+  <!-- استدعاء الخطوط العربية والعالمية[span_1](start_span)[span_1](end_span) -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 (lightweight icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Tailwind CSS via CDN (optimized) -->
+  
+  <!-- مكتبة Tailwind CSS[span_2](start_span)[span_2](end_span) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Custom Tailwind config override -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'deep-purple': '#0a0015',
-            'neon-violet': '#a100ff',
-            'neon-glow': '#b525ff',
-            'card-bg': 'rgba(255,255,255,0.03)',
-          },
-          fontFamily: {
-            cairo: ['Cairo', 'sans-serif'],
-            montserrat: ['Montserrat', 'sans-serif'],
-          },
-          animation: {
-            'glow-pulse': 'glowPulse 2s ease-in-out infinite',
-            'fade-out': 'fadeOut 0.6s forwards',
-          },
-          keyframes: {
-            glowPulse: {
-              '0%, 100%': { textShadow: '0 0 4px #a100ff, 0 0 8px #a100ff' },
-              '50%': { textShadow: '0 0 12px #a100ff, 0 0 20px #b525ff' },
-            },
-            fadeOut: {
-              '0%': { opacity: '1', transform: 'scale(1)' },
-              '100%': { opacity: '0', transform: 'scale(0.95)', display: 'none', visibility: 'hidden' }
-            }
-          }
-        }
-      }
-    }
-  </script>
+  
   <style>
-    /* custom smoke particles + extra styles */
-    body {
-      background: #05000a;
-      font-family: 'Cairo', 'Montserrat', sans-serif;
-      overflow-x: hidden;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #05000a; font-family: 'Cairo', 'Montserrat', sans-serif; overflow-x: hidden; }
+    html { scroll-behavior: smooth; }
+    
+    /* تأثير شاشة التحميل (Splash Screen) */
+    .splash-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000000; display: flex; justify-content: center;
+      align-items: center; z-index: 10000; transition: opacity 0.6s ease;
     }
-    /* Smooth scroll behavior */
-    html {
-      scroll-behavior: smooth;
+    .splash-logo {
+      font-size: 3.5rem; font-weight: 800;
+      background: linear-gradient(135deg, #ffffff, #a100ff, #FFD700);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: pulseLogo 1.2s ease-in-out infinite;
     }
-    /* Smoke effect container */
-    .smoke-canvas {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 5;
-      overflow: hidden;
+    @keyframes pulseLogo {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px rgba(161,0,255,0.5); }
     }
-    .smoke-particle {
-      position: absolute;
-      background: radial-gradient(circle, rgba(160, 100, 200, 0.25) 0%, rgba(100, 50, 150, 0) 80%);
-      border-radius: 50%;
-      filter: blur(8px);
-      pointer-events: none;
-      animation: floatSmoke 3s ease-out forwards;
+    
+    /* تصميم البطاقات الزجاجية[span_3](start_span)[span_3](end_span) */
+    .glass-card {
+      background: rgba(10, 0, 21, 0.75); backdrop-filter: blur(12px);
+      border: 2px solid rgba(161, 0, 255, 0.4); transition: all 0.3s ease;
     }
-    @keyframes floatSmoke {
-      0% {
-        transform: translateY(0) scale(0.3);
-        opacity: 0.6;
-      }
-      100% {
-        transform: translateY(-120px) scale(1.2);
-        opacity: 0;
-      }
+    .glass-card:hover {
+      transform: translateY(-8px); border-color: #a100ff;
+      box-shadow: 0 0 25px rgba(161, 0, 255, 0.5); background: rgba(161, 0, 255, 0.12);
     }
-    /* Card hover glow */
-    .menu-card {
-      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+
+    /* سلة المشتريات الجانبية */
+    .cart-sidebar {
+      position: fixed; top: 0; right: -380px; width: 380px; height: 100vh;
+      background: rgba(5, 0, 10, 0.98); backdrop-filter: blur(20px);
+      border-right: 2px solid #a100ff; z-index: 1000; transition: right 0.25s ease;
     }
-    .menu-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 0 18px rgba(161, 0, 255, 0.4);
-      border-color: #a100ff;
-      background: rgba(161, 0, 255, 0.08);
-    }
-    /* hide countdown after expiry animation */
-    .countdown-wrapper.hide-countdown {
-      animation: fadeOut 0.5s forwards;
-    }
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-        display: none;
-        height: 0;
-        padding: 0;
-        margin: 0;
-      }
-    }
-    /* order button permanent after removal */
-    .order-now-main {
-      transition: 0.2s;
-    }
-    /* lazy image blur-up */
-    img {
-      transition: opacity 0.2s;
-    }
-    /* custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0a0015;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #a100ff;
-      border-radius: 10px;
-    }
+    .cart-sidebar.open { right: 0; }
   </style>
 </head>
-<body class="bg-deep-purple text-white font-cairo">
+<body>
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-logo">Hungry Bites</div>
+  </div>
+  
+  <div id="root"></div>
 
-  <div id="root" class="min-h-screen"></div>
-
-  <!-- React + ReactDOM + Babel for JSX (production ready) -->
+  <!-- مكتبات React الأساسية[span_4](start_span)[span_4](end_span) -->
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
-    // ---------- HOOKS & COMPONENTS ----------
-    const { useState, useEffect, useRef, useCallback } = React;
+    const { useState, useEffect, useRef } = React;
 
-    // Smoke Effect Component (CSS particles for zero lag)
-    const SmokeEffect = ({ isActive }) => {
-      const containerRef = useRef(null);
-      const intervalRef = useRef(null);
-      
-      useEffect(() => {
-        if (!isActive) return;
-        // generate smoke particles every 400ms (lightweight)
-        const createParticle = () => {
-          if (!containerRef.current) return;
-          const particle = document.createElement('div');
-          particle.className = 'smoke-particle';
-          const size = 35 + Math.random() * 40;
-          particle.style.width = `${size}px`;
-          particle.style.height = `${size}px`;
-          particle.style.left = `${35 + Math.random() * 50}%`; // emerge from center burger area
-          particle.style.bottom = '20px';
-          particle.style.animationDuration = `${2 + Math.random() * 1.5}s`;
-          particle.style.opacity = 0.5 + Math.random() * 0.3;
-          containerRef.current.appendChild(particle);
-          setTimeout(() => particle.remove(), 3200);
-        };
-        intervalRef.current = setInterval(createParticle, 380);
-        return () => {
-          if (intervalRef.current) clearInterval(intervalRef.current);
-        };
-      }, [isActive]);
-      
-      return <div ref={containerRef} className="smoke-canvas"></div>;
-    };
-    
-    // Countdown logic (target 7:00 PM daily)
-    const useCountdown = () => {
-      const [timeLeft, setTimeLeft] = useState(null);
-      const [isOpen, setIsOpen] = useState(false);
-      const [shouldHide, setShouldHide] = useState(false);
-      
-      useEffect(() => {
-        const calculateTime = () => {
-          const now = new Date();
-          const target = new Date(now);
-          target.setHours(19, 0, 0, 0); // 7:00 PM
-          
-          if (now >= target) {
-            setIsOpen(true);
-            setShouldHide(true);
-            setTimeLeft(null);
-            return null;
-          }
-          
-          setIsOpen(false);
-          setShouldHide(false);
-          const diff = target - now;
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (3600000)) / 60000);
-          const seconds = Math.floor((diff % 60000) / 1000);
-          return { hours, minutes, seconds, diff };
-        };
-        
-        const update = () => {
-          const result = calculateTime();
-          if (result === null) {
-            if (!isOpen) setIsOpen(true);
-            if (!shouldHide) setShouldHide(true);
-            setTimeLeft(null);
-          } else {
-            setTimeLeft(result);
-            if (isOpen) setIsOpen(false);
-            if (shouldHide) setShouldHide(false);
-          }
-        };
-        
-        update();
-        const interval = setInterval(update, 1000);
-        return () => clearInterval(interval);
-      }, []);
-      
-      return { timeLeft, isOpen, shouldHide };
-    };
-    
-    // Menu Data (based on image)
-    const menuItems = [
-      { id: 1, name: "بيف كالسيك", nameEn: "Beef Classic", price: "34 ر.س", desc: "قطعة لحم مشوية مع الجبن والخيار الطازجة وصفة خاصة", image: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&w=400" },
-      { id: 2, name: "سيباسي بايتس", nameEn: "Spicy Bites", price: "37 ر.س", desc: "برجر حار بطعم لا يُقاوم مع صوص سيباسي المميز", image: "https://images.pexels.com/photos/3219547/pexels-photo-3219547.jpeg?auto=compress&w=400" },
-      { id: 3, name: "بطاطس لوديد", nameEn: "Loaded Fries", price: "22 ر.س", desc: "بطاطس مقلية مع الجبن والبيكون وصوص الرانش", image: "https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&w=400" },
-      { id: 4, name: "تشيكن بايتس", nameEn: "Chicken Bites", price: "28 ر.س", desc: "قطع دجاج مقرمشة بخلطة سرية", image: "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&w=400" },
-      { id: 5, name: "موهيتو التوت", nameEn: "Berry Mocktail", price: "16 ر.س", desc: "مشروب منعش بنكهات التوت الطبيعي", image: "https://images.pexels.com/photos/846075/pexels-photo-846075.jpeg?auto=compress&w=400" },
-      { id: 6, name: "تشيز برجر ديلوكس", nameEn: "Cheese Deluxe", price: "39 ر.س", desc: "شريحة لحم أنجوس، جبنة شيدر، خضار طازجة", image: "https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg?auto=compress&w=400" }
-    ];
-    
-    // Toast notification component
-    const Toast = ({ message, visible }) => {
-      if (!visible) return null;
-      return (
-        <div className="fixed bottom-24 left-4 z-50 bg-black/80 backdrop-blur-md border-r-4 border-neon-violet text-white px-5 py-2 rounded-full text-sm font-montserrat shadow-xl transition-all duration-300">
-          <i className="fas fa-check-circle text-neon-violet ml-2"></i> {message}
-        </div>
-      );
-    };
-    
-    // Main App Component
+    // إخفاء شاشة التحميل
+    setTimeout(() => {
+      const splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 500);
+      }
+    }, 2500);
+
     const App = () => {
-      const { timeLeft, isOpen, shouldHide } = useCountdown();
-      const [cartToast, setCartToast] = useState({ show: false, message: "" });
-      const [isOrderHover, setIsOrderHover] = useState(false);
-      
-      const showToast = (itemName) => {
-        setCartToast({ show: true, message: `✨ تم إضافة ${itemName} إلى الطلب` });
-        setTimeout(() => setCartToast({ show: false, message: "" }), 1500);
+      const [cart, setCart] = useState([]);
+      const [cartOpen, setCartOpen] = useState(false);
+
+      // إضافة منتج للسلة
+      const addToCart = (item) => {
+        setCart([...cart, { ...item, id: Date.now() }]);
       };
-      
-      const handleAddToCart = (itemName) => {
-        showToast(itemName);
-        // Optionally store in localStorage but main is via WhatsApp
-        let cart = JSON.parse(localStorage.getItem("hungry_cart") || "[]");
-        cart.push(itemName);
-        localStorage.setItem("hungry_cart", JSON.stringify(cart));
-      };
-      
-      const buildWhatsAppLink = () => {
-        let cart = JSON.parse(localStorage.getItem("hungry_cart") || "[]");
-        let baseMsg = "مرحباً Hungry Bites 🌟%0Aأرغب في طلب:%0A";
-        if (cart.length === 0) baseMsg = "مرحباً، أرغب في طلب من القائمة%0A";
-        else {
-          let itemsList = cart.map((it, idx) => `${idx+1}- ${it}`).join("%0A");
-          baseMsg += itemsList + "%0Aالموقع: جدة - بحره (حي الروضة)";
-        }
-        baseMsg += "%0Aشكراً 🙏";
-        return `https://wa.me/966564035409?text=${baseMsg}`;
-      };
-      
-      const openWhatsApp = () => window.open(buildWhatsAppLink(), '_blank');
-      
-      // Countdown display component
-      const CountdownDisplay = () => {
-        if (isOpen) return null;
-        if (shouldHide) return null;
-        if (!timeLeft) return null;
-        const { hours, minutes, seconds } = timeLeft;
-        return (
-          <div className="countdown-wrapper bg-black/50 backdrop-blur-md rounded-2xl p-5 border border-neon-violet/40 shadow-[0_0_20px_rgba(161,0,255,0.3)] text-center transition-all">
-            <p className="text-sm uppercase tracking-wider text-gray-300 mb-2"><i className="fas fa-hourglass-half ml-1 text-neon-violet"></i> العد التنازلي بدأ.. الافتتاح بعد المغرب (7:00 م)</p>
-            <div className="font-montserrat text-5xl md:text-6xl font-bold text-neon-violet animate-glow-pulse tracking-wider">
-              {String(hours).padStart(2,'0')} : {String(minutes).padStart(2,'0')} : {String(seconds).padStart(2,'0')}
-            </div>
-            <p className="text-xs text-gray-400 mt-3">سيتم الافتتاح مباشرة بعد صلاة المغرب</p>
-          </div>
-        );
-      };
-      
-      const OrderButtonPermanent = () => (
-        <button 
-          onClick={openWhatsApp}
-          className="order-now-main bg-gradient-to-r from-neon-violet to-purple-700 hover:from-purple-600 hover:to-neon-violet text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 w-full md:w-auto"
-        >
-          <i className="fab fa-whatsapp text-2xl"></i>
-          <span>اطلب الآن / Order Now</span>
-        </button>
-      );
-      
+
       return (
-        <div className="min-h-screen">
-          {/* Hero Section with Burger Background & Smoke */}
-          <div className="relative w-full overflow-hidden">
-            {/* Background Image with overlay */}
-            <div className="absolute inset-0 z-0">
-              <img 
-                src="https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg?auto=compress&w=1200" 
-                alt="Burger background" 
-                className="w-full h-full object-cover brightness-[0.3] saturate-[1.2]"
-                loading="eager"
-              />
+        <div className="min-h-screen text-white">
+          {/* التنقل (Navbar)[span_5](start_span)[span_5](end_span) */}
+          <nav className="fixed top-0 w-full z-50 p-5 flex justify-between items-center bg-black/50 backdrop-blur-md">
+            <div className="text-2xl font-extrabold">Hungry <span className="text-yellow-500">Bites</span></div>
+            <button onClick={() => setCartOpen(true)} className="relative p-2 bg-purple-600 rounded-full">
+              <i className="fas fa-shopping-cart"></i>
+              <span className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 text-xs flex items-center justify-center">{cart.length}</span>
+            </button>
+          </nav>
+
+          {/* قسم العرض الرئيسي (Hero)[span_6](start_span)[span_6](end_span) */}
+          <header className="h-screen flex items-center justify-center text-center px-5 bg-[url('https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg')] bg-cover bg-center">
+            <div className="bg-black/60 p-10 rounded-3xl backdrop-blur-sm">
+              <h1 className="text-5xl md:text-7xl font-black mb-4">الجوع ماله حل.. <br/><span className="text-red-500">إلا بيتس!</span></h1>
+              <p className="text-xl">فرع بحرة | أفضل تجربة برجر وفطور</p>
             </div>
-            {/* Smoke effect */}
-            <SmokeEffect isActive={true} />
-            <div className="relative z-10 container mx-auto px-5 py-12 md:py-20">
-              <div className="flex flex-col lg:flex-row items-center gap-12">
-                <div className="flex-1 text-right">
-                  <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-                    الجوع ماله حل.. <span className="text-red-500 drop-shadow-lg">إلا بيتس!</span>
-                  </h1>
-                  <p className="text-xl md:text-2xl text-gray-200 mt-4 font-montserrat border-r-4 border-neon-violet pr-4">
-                    No cure for hunger.. except Bites!
-                  </p>
-                  <p className="text-gray-300 mt-2">استعدوا لتجربة طعم لا تُنسى | Prepare for an unforgettable taste experience</p>
-                  
-                  <div className="mt-8">
-                    <CountdownDisplay />
-                    {isOpen && (
-                      <div className="mt-6 flex justify-center lg:justify-start">
-                        <OrderButtonPermanent />
-                      </div>
-                    )}
-                    {!isOpen && !shouldHide && timeLeft === null && (
-                      <div className="mt-6 flex justify-center lg:justify-start">
-                        <OrderButtonPermanent />
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex-1 flex justify-center">
-                  <img 
-                    src="https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&w=500" 
-                    alt="Signature Burger" 
-                    className="rounded-3xl shadow-2xl border-2 border-neon-violet/50 w-80 md:w-96 object-cover"
-                    loading="lazy"
-                  />
-                </div>
+          </header>
+
+          {/* سلة المشتريات الجانبية[span_7](start_span)[span_7](end_span) */}
+          <div className={`cart-sidebar ${cartOpen ? 'open' : ''} p-6`}>
+            <div className="flex justify-between items-center mb-10">
+              <h2 className="text-xl font-bold">سلة الطلبات</h2>
+              <button onClick={() => setCartOpen(false)} className="text-3xl">&times;</button>
+            </div>
+            {cart.map(item => (
+              <div key={item.id} className="mb-4 p-3 border-b border-purple-500/30 flex justify-between">
+                <span>{item.name}</span>
+                <span className="text-purple-400">{item.price} ر.س</span>
               </div>
-            </div>
+            ))}
+            <button className="w-full bg-green-600 py-3 rounded-full mt-10 font-bold">إرسال الطلب عبر واتساب</button>
           </div>
-          
-          {/* Menu Section - Grid with glowing cards */}
-          <div className="container mx-auto px-5 py-16">
-            <div className="flex items-center gap-3 mb-10 border-r-4 border-neon-violet pr-5">
-              <i className="fas fa-utensils text-3xl text-neon-violet"></i>
-              <h2 className="text-3xl md:text-4xl font-bold">القائمة / Menu</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-              {menuItems.map((item) => (
-                <div key={item.id} className="menu-card bg-card-bg backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden transition-all cursor-pointer group">
-                  <div className="relative overflow-hidden h-56">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
-                  </div>
-                  <div className="p-5">
-                    <div className="flex justify-between items-baseline">
-                      <h3 className="text-xl font-bold">{item.name}</h3>
-                      <span className="text-neon-violet font-montserrat font-bold text-lg">{item.price}</span>
-                    </div>
-                    <p className="text-gray-400 text-sm mt-2 h-12">{item.desc}</p>
-                    <button 
-                      onClick={() => handleAddToCart(item.name)}
-                      className="mt-4 w-full py-2 rounded-full border border-neon-violet text-neon-violet hover:bg-neon-violet hover:text-white transition font-semibold flex items-center justify-center gap-2"
-                    >
-                      <i className="fas fa-cart-plus"></i> أضف إلى الطلب
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <!-- Additional Menu Row exactly as original (mirror image_2) -->
-          <div className="container mx-auto px-5 mb-12">
-            <div className="bg-white/5 rounded-3xl p-6 border border-neon-violet/20 backdrop-blur-sm">
-              <h3 className="text-2xl font-bold text-center mb-6"><i className="fas fa-clipboard-list ml-2 text-neon-violet"></i> أطباقنا المميزة</h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between border-b border-white/10 pb-2"><span className="font-bold">🥩 بيف كالسيك</span><span className="text-neon-violet">34 ر.س.</span></div>
-                  <div className="flex justify-between border-b border-white/10 pb-2"><span className="font-bold">🌶️ سيباسي بايتس</span><span className="text-neon-violet">37 ر.س.</span></div>
-                  <div className="flex justify-between border-b border-white/10 pb-2"><span className="font-bold">🍟 بطاطس لوديد</span><span className="text-neon-violet">22 ر.س.</span></div>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between border-b border-white/10 pb-2"><span className="font-bold">🍗 تشيكن بايتس</span><span className="text-neon-violet">28 ر.س.</span></div>
-                  <div className="flex justify-between border-b border-white/10 pb-2"><span className="font-bold">🍹 موهيتو التوت</span><span className="text-neon-violet">16 ر.س.</span></div>
-                  <div className="flex justify-between border-b border-white/10 pb-2"><span className="font-bold">🧀 تشيز برجر ديلوكس</span><span className="text-neon-violet">39 ر.س.</span></div>
-                </div>
-              </div>
-              <p className="text-center text-gray-400 text-xs mt-6"><i className="fas fa-hand-point-left ml-1"></i> اضغط على أي صنف للإضافة المباشرة</p>
-            </div>
-          </div>
-          
-          <!-- Info Sections: About, Location (Bahrah / Jeddah), Hours -->
-          <div className="container mx-auto px-5 pb-16">
-            <div className="grid md:grid-cols-3 gap-8">
-              {/* About Us */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-4">
-                  <i className="fas fa-address-card text-2xl text-neon-violet"></i>
-                  <h3 className="text-2xl font-bold">من نحن</h3>
-                </div>
-                <p className="text-gray-300 leading-relaxed">
-                  في Hungry Bites نؤمن أن الطعام ليس مجرد وجبة، بل تجربة متكاملة. نستخدم أفضل المكونات الطازجة لنقدم لك تكافؤاً لا يُنسى في كل قضمة.
-                </p>
-                <button className="mt-5 text-neon-violet text-sm flex items-center gap-1 hover:gap-2 transition-all" onClick={() => showToast("شكراً لاهتمامك!")}>
-                  اقرأ الصريح <i className="fas fa-arrow-left"></i>
-                </button>
-              </div>
-              
-              {/* Location - UPDATED to بحره */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-4">
-                  <i className="fas fa-map-marker-alt text-2xl text-neon-violet"></i>
-                  <h3 className="text-2xl font-bold">موقعنا</h3>
-                </div>
-                <p className="text-gray-200 font-semibold">جدة - بحره</p>
-                <p className="text-gray-300">حي بحره، شارع الأمير ماجد (قرب الكورنيش)</p>
-                <a 
-                  href="https://maps.app.goo.gl/HVDNKyg2ySoZAcWg8" 
-                  target="_blank"
-                  className="inline-flex items-center gap-2 mt-4 bg-neon-violet/20 border border-neon-violet rounded-full px-4 py-2 text-sm hover:bg-neon-violet transition"
-                >
-                  <i className="fab fa-google"></i> اتجاهات قوقل ماب
-                </a>
-              </div>
-              
-              {/* Working Hours */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-4">
-                  <i className="far fa-clock text-2xl text-neon-violet"></i>
-                  <h3 className="text-2xl font-bold">ساعات العمل</h3>
-                </div>
-                <p className="text-gray-200">يومياً من 4:00 مساءً <br /> حتى 2:00 بعد منتصف الليل</p>
-                <p className="text-neon-violet text-sm mt-3 flex items-center gap-1"><i className="fas fa-moon"></i> الافتتاح بعد المغرب مباشرة (7:00 مساءً)</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Toast Notification */}
-          <Toast message={cartToast.message} visible={cartToast.show} />
-          
-          {/* Footer with credits */}
-          <footer className="border-t border-white/10 py-8 mt-8">
-            <div className="container mx-auto px-5 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-sm">
-              <div className="flex items-center gap-3">
-                <i className="fab fa-tiktok text-white"></i>
-                <a href="https://www.tiktok.com/@hungrybites0" target="_blank" className="hover:text-neon-violet transition">TikTok: @hungrybites0</a>
-              </div>
-              <div className="text-center">
-                <span>Developed by: <strong className="text-neon-violet">@_itlb_</strong></span>
-              </div>
-              <div className="flex gap-4">
-                <i className="fab fa-whatsapp text-green-500"></i>
-                <span>اطلب واتساب: 056 403 5409</span>
-              </div>
-            </div>
-            <p className="text-center text-gray-600 text-xs mt-4">© 2025 Hungry Bites - جدة بحره | Hungry Bites Experience</p>
-          </footer>
         </div>
       );
     };
-    
+
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
