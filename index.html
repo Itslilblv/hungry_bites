@@ -2,21 +2,240 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hungry Bites</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--bg:#05000a;
+--neon:#a100ff;
+--glass:rgba(255,255,255,0.05);
+}
+
+body{
+margin:0;
+background:var(--bg);
+color:#fff;
+font-family:Cairo,Montserrat;
+}
+
+/* NAV */
+nav{
+display:flex;
+justify-content:space-between;
+padding:20px 40px;
+align-items:center;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+}
+
+.logo span{
+color:red;
+}
+
+/* HERO */
+.hero{
+display:flex;
+padding:40px;
+align-items:center;
+justify-content:space-between;
+}
+
+.hero-text{
+max-width:500px;
+}
+
+.hero-text h1{
+font-size:40px;
+}
+
+.highlight{
+color:red;
+}
+
+/* COUNTDOWN BOX */
+.count-box{
+margin-top:20px;
+padding:20px;
+border-radius:20px;
+background:var(--glass);
+border:1px solid rgba(255,255,255,0.1);
+box-shadow:0 0 20px var(--neon);
+text-align:center;
+}
+
+.count{
+font-size:40px;
+color:var(--neon);
+}
+
+/* IMAGE */
+.hero img{
+width:450px;
+border-radius:20px;
+}
+
+/* MENU */
+.menu{
+padding:40px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.card{
+background:var(--glass);
+padding:15px;
+border-radius:15px;
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 0 20px var(--neon);
+}
+
+.card img{
+width:100%;
+border-radius:10px;
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:30px;
+border-top:1px solid #222;
+margin-top:30px;
+}
+
+.btn{
+border:1px solid var(--neon);
+padding:10px 20px;
+border-radius:20px;
+cursor:pointer;
+background:none;
+color:#fff;
+}
+
+.btn:hover{
+background:var(--neon);
+}
+</style>
 </head>
 
-<body style="background:black;color:white;text-align:center">
+<body>
 
-<h1>Hungry Bites</h1>
+<nav>
+<div class="logo">Hungry <span>Bite$</span></div>
+<div>
+<button class="btn">اطلب الآن</button>
+</div>
+</nav>
+
+<section class="hero">
+
+<div class="hero-text">
+<h1>
+الجوع ماله حل..<span class="highlight"> إلا بيتس!</span>
+</h1>
+
+<p>No cure for hunger.. except Bites!</p>
+
+<div class="count-box">
+<p>العد التنازلي بدأ.. الافتتاح بعد المغرب</p>
+<div id="count" class="count"></div>
+</div>
+
+</div>
+
+<img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd">
+
+</section>
+
+<section class="menu">
 
 <h2>القائمة</h2>
 
-<button onclick="order()">اطلب الآن</button>
+<div class="grid">
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1550547660-d9450f859349">
+<h3>Beef Burger</h3>
+<button onclick="add('Burger')">+</button>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1585238342028-4c1c43eaa4d0">
+<h3>Fries</h3>
+<button onclick="add('Fries')">+</button>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092">
+<h3>Chicken</h3>
+<button onclick="add('Chicken')">+</button>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87">
+<h3>Drink</h3>
+<button onclick="add('Drink')">+</button>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>@hungrybites</p>
+<p>Developed by @_itlb</p>
+
+</footer>
 
 <script>
-function order(){
-window.open("https://wa.me/966564035409?text=طلب جديد");
+let cart=[];
+
+function add(item){
+cart.push(item);
+alert("تمت الإضافة");
 }
+
+// API المغرب
+fetch("https://api.aladhan.com/v1/timingsByCity?city=Jeddah&country=Saudi Arabia")
+.then(res=>res.json())
+.then(data=>{
+let maghrib=data.data.timings.Maghrib;
+
+let target=new Date();
+let [h,m]=maghrib.split(":");
+target.setHours(h,m,0);
+
+function update(){
+let diff=target-new Date();
+
+if(diff<=0){
+document.getElementById("count").innerHTML="تم الافتتاح 🎉";
+return;
+}
+
+let s=Math.floor(diff/1000)%60;
+let m2=Math.floor(diff/1000/60)%60;
+let h2=Math.floor(diff/1000/60/60);
+
+document.getElementById("count").innerHTML=h2+":"+m2+":"+s;
+}
+
+setInterval(update,1000);
+});
 </script>
 
 </body>
