@@ -4,20 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Hungry Bites | بيتس - بحرة</title>
-  
-  <!-- استدعاء الخطوط العربية والعالمية[span_1](start_span)[span_1](end_span) -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
-  <!-- مكتبة Tailwind CSS[span_2](start_span)[span_2](end_span) -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #05000a; font-family: 'Cairo', 'Montserrat', sans-serif; overflow-x: hidden; }
     html { scroll-behavior: smooth; }
     
-    /* تأثير شاشة التحميل (Splash Screen) */
+    /* Splash Screen */
     .splash-screen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: #000000; display: flex; justify-content: center;
@@ -34,33 +32,39 @@
       50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px rgba(161,0,255,0.5); }
     }
     
-    /* تصميم البطاقات الزجاجية[span_3](start_span)[span_3](end_span) */
-    .glass-card {
-      background: rgba(10, 0, 21, 0.75); backdrop-filter: blur(12px);
-      border: 2px solid rgba(161, 0, 255, 0.4); transition: all 0.3s ease;
-    }
-    .glass-card:hover {
-      transform: translateY(-8px); border-color: #a100ff;
-      box-shadow: 0 0 25px rgba(161, 0, 255, 0.5); background: rgba(161, 0, 255, 0.12);
-    }
-
-    /* سلة المشتريات الجانبية */
-    .cart-sidebar {
-      position: fixed; top: 0; right: -380px; width: 380px; height: 100vh;
-      background: rgba(5, 0, 10, 0.98); backdrop-filter: blur(20px);
-      border-right: 2px solid #a100ff; z-index: 1000; transition: right 0.25s ease;
-    }
+    /* Navbar */
+    .navbar { transition: all 0.2s ease; }
+    .navbar-scrolled { background: rgba(5, 0, 10, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(161, 0, 255, 0.3); }
+    .logo-text { font-size: 1.6rem; font-weight: 800; }
+    .logo-text .hungry { color: #ffffff; }
+    .logo-text .bite-s { color: #FFD700; text-shadow: 0 0 3px #FFD700; }
+    
+    /* Smoke Effect */
+    .smoke-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; overflow: hidden; }
+    .smoke-particle { position: absolute; background: radial-gradient(circle, rgba(161, 0, 255, 0.3) 0%, rgba(100, 50, 150, 0) 80%); border-radius: 50%; filter: blur(12px); animation: floatSmoke 3.5s ease-out forwards; }
+    @keyframes floatSmoke { 0% { transform: translateY(0) scale(0.3); opacity: 0.5; } 100% { transform: translateY(-180px) scale(1.8); opacity: 0; } }
+    
+    /* Glass Cards */
+    .glass-card { background: rgba(10, 0, 21, 0.75); backdrop-filter: blur(12px); border: 2px solid rgba(161, 0, 255, 0.4); transition: all 0.3s ease; }
+    .glass-card:hover { transform: translateY(-8px); border-color: #a100ff; box-shadow: 0 0 25px rgba(161, 0, 255, 0.5); background: rgba(161, 0, 255, 0.12); }
+    
+    /* Cart Sidebar */
+    .cart-sidebar { position: fixed; top: 0; right: -380px; width: 380px; height: 100vh; background: rgba(5, 0, 10, 0.98); backdrop-filter: blur(20px); border-right: 2px solid #a100ff; z-index: 1000; transition: right 0.25s ease; box-shadow: -5px 0 25px rgba(161, 0, 255, 0.25); }
     .cart-sidebar.open { right: 0; }
+    .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; display: none; }
+    .cart-overlay.open { display: block; }
+    
+    .countdown-digits { color: #c084fc; text-shadow: 0 0 6px rgba(161, 0, 255, 0.3); font-weight: 700; }
+    .open-indicator { animation: greenPulse 1.5s ease-in-out infinite; }
+    @keyframes greenPulse { 0%, 100% { box-shadow: 0 0 4px #22c55e, 0 0 8px #22c55e; } 50% { box-shadow: 0 0 12px #22c55e, 0 0 18px #4ade80; } }
   </style>
 </head>
 <body>
   <div id="splashScreen" class="splash-screen">
     <div class="splash-logo">Hungry Bites</div>
   </div>
-  
   <div id="root"></div>
 
-  <!-- مكتبات React الأساسية[span_4](start_span)[span_4](end_span) -->
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
@@ -68,7 +72,7 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    // إخفاء شاشة التحميل
+    // Splash Logic
     setTimeout(() => {
       const splash = document.getElementById('splashScreen');
       if (splash) {
@@ -77,48 +81,138 @@
       }
     }, 2500);
 
+    const SmokeEffect = () => {
+      const containerRef = useRef(null);
+      useEffect(() => {
+        const interval = setInterval(() => {
+          if (!containerRef.current) return;
+          const particle = document.createElement('div');
+          particle.className = 'smoke-particle';
+          const size = 40 + Math.random() * 60;
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          particle.style.left = `${20 + Math.random() * 65}%`;
+          particle.style.bottom = '0px';
+          particle.style.animationDuration = `${2.8 + Math.random() * 1.8}s`;
+          containerRef.current.appendChild(particle);
+          setTimeout(() => particle.remove(), 4000);
+        }, 350);
+        return () => clearInterval(interval);
+      }, []);
+      return <div ref={containerRef} className="smoke-container"></div>;
+    };
+
     const App = () => {
+      const [isOpen, setIsOpen] = useState(false);
+      const [timeLeft, setTimeLeft] = useState(null);
       const [cart, setCart] = useState([]);
       const [cartOpen, setCartOpen] = useState(false);
+      const [scrolled, setScrolled] = useState(false);
 
-      // إضافة منتج للسلة
+      // Countdown Calculation
+      useEffect(() => {
+        const calculate = () => {
+          const now = new Date();
+          const target = new Date(now);
+          target.setHours(19, 0, 0, 0);
+          if (now >= target) { setIsOpen(true); setTimeLeft(null); } 
+          else {
+            setIsOpen(false);
+            const diff = target - now;
+            setTimeLeft({
+              hours: Math.floor(diff / 3600000),
+              minutes: Math.floor((diff % 3600000) / 60000),
+              seconds: Math.floor((diff % 60000) / 1000)
+            });
+          }
+        };
+        calculate();
+        const interval = setInterval(calculate, 1000);
+        window.addEventListener('scroll', () => setScrolled(window.scrollY > 50));
+        return () => clearInterval(interval);
+      }, []);
+
       const addToCart = (item) => {
-        setCart([...cart, { ...item, id: Date.now() }]);
+        const existing = cart.find(i => i.id === item.id);
+        if (existing) {
+          setCart(cart.map(i => i.id === item.id ? {...i, quantity: i.quantity + 1} : i));
+        } else {
+          setCart([...cart, {...item, quantity: 1}]);
+        }
       };
 
+      const getTotal = () => cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+
+      const menuItems = [
+        { id: 1, name: "بيف كلاسيك", price: 34, img: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&w=600" },
+        { id: 2, name: "تشيز دبل برجر", price: 45, img: "https://images.pexels.com/photos/2909822/pexels-photo-2909822.jpeg?auto=compress&w=600" },
+        { id: 3, name: "سبيسي تشيكن", price: 32, img: "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&w=600" },
+        { id: 4, name: "بطاطس لوديد", price: 22, img: "https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&w=600" }
+      ];
+
       return (
-        <div className="min-h-screen text-white">
-          {/* التنقل (Navbar)[span_5](start_span)[span_5](end_span) */}
-          <nav className="fixed top-0 w-full z-50 p-5 flex justify-between items-center bg-black/50 backdrop-blur-md">
-            <div className="text-2xl font-extrabold">Hungry <span className="text-yellow-500">Bites</span></div>
-            <button onClick={() => setCartOpen(true)} className="relative p-2 bg-purple-600 rounded-full">
-              <i className="fas fa-shopping-cart"></i>
-              <span className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 text-xs flex items-center justify-center">{cart.length}</span>
+        <div className="min-h-screen">
+          <nav className={`navbar fixed top-0 w-full z-50 p-4 flex justify-between items-center ${scrolled ? 'navbar-scrolled' : ''}`}>
+            <div className="logo-text"><span className="text-white">Hungry Bite</span><span className="bite-s">s</span></div>
+            <button onClick={() => setCartOpen(true)} className="bg-[#a100ff]/20 border border-[#a100ff] px-4 py-2 rounded-full text-white">
+              <i className="fas fa-shopping-cart"></i> ({cart.length})
             </button>
           </nav>
 
-          {/* قسم العرض الرئيسي (Hero)[span_6](start_span)[span_6](end_span) */}
-          <header className="h-screen flex items-center justify-center text-center px-5 bg-[url('https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg')] bg-cover bg-center">
-            <div className="bg-black/60 p-10 rounded-3xl backdrop-blur-sm">
-              <h1 className="text-5xl md:text-7xl font-black mb-4">الجوع ماله حل.. <br/><span className="text-red-500">إلا بيتس!</span></h1>
-              <p className="text-xl">فرع بحرة | أفضل تجربة برجر وفطور</p>
+          <header className="relative h-screen flex items-center justify-center overflow-hidden">
+            <img src="https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg?auto=compress&w=1600" className="absolute inset-0 w-full h-full object-cover brightness-[0.3]" />
+            <SmokeEffect />
+            <div className="relative z-10 text-center px-5">
+              <h1 className="text-6xl md:text-8xl font-black text-white">الجوع ماله حل..<br/><span className="text-red-500">إلا بيتس!</span></h1>
+              {!isOpen && timeLeft && (
+                <div className="mt-8 bg-black/60 backdrop-blur-md p-6 rounded-3xl border border-[#a100ff]/40 inline-block">
+                  <p className="text-gray-300 text-sm mb-2">الافتتاح اليوم الساعة 7:00 م</p>
+                  <div className="text-5xl font-bold countdown-digits">
+                    {String(timeLeft.hours).padStart(2,'0')}:{String(timeLeft.minutes).padStart(2,'0')}:{String(timeLeft.seconds).padStart(2,'0')}
+                  </div>
+                </div>
+              )}
             </div>
           </header>
 
-          {/* سلة المشتريات الجانبية[span_7](start_span)[span_7](end_span) */}
-          <div className={`cart-sidebar ${cartOpen ? 'open' : ''} p-6`}>
-            <div className="flex justify-between items-center mb-10">
-              <h2 className="text-xl font-bold">سلة الطلبات</h2>
-              <button onClick={() => setCartOpen(false)} className="text-3xl">&times;</button>
+          <section className="container mx-auto px-5 py-20">
+            <h2 className="text-4xl font-bold text-white mb-10 border-r-4 border-[#a100ff] pr-4">المنيو / Menu</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {menuItems.map(item => (
+                <div key={item.id} className="glass-card rounded-2xl overflow-hidden">
+                  <img src={item.img} className="h-48 w-full object-cover" />
+                  <div className="p-4">
+                    <div className="flex justify-between text-white font-bold mb-4">
+                      <span>{item.name}</span>
+                      <span className="text-[#c084fc]">{item.price} ر.س</span>
+                    </div>
+                    <button onClick={() => addToCart(item)} className="w-full py-2 rounded-full border border-[#a100ff] text-[#c084fc] hover:bg-[#a100ff] hover:text-white transition">أضف للسلة</button>
+                  </div>
+                </div>
+              ))}
             </div>
-            {cart.map(item => (
-              <div key={item.id} className="mb-4 p-3 border-b border-purple-500/30 flex justify-between">
-                <span>{item.name}</span>
-                <span className="text-purple-400">{item.price} ر.س</span>
+          </section>
+
+          <div className={`cart-sidebar ${cartOpen ? 'open' : ''} p-6`}>
+            <div className="flex justify-between items-center text-white mb-8">
+              <h2 className="text-xl font-bold">سلتك</h2>
+              <button onClick={() => setCartOpen(false)} className="text-2xl">&times;</button>
+            </div>
+            {cart.map(i => (
+              <div key={i.id} className="text-white flex justify-between mb-4 border-b border-white/10 pb-2">
+                <span>{i.name} (x{i.quantity})</span>
+                <span>{i.price * i.quantity} ر.س</span>
               </div>
             ))}
-            <button className="w-full bg-green-600 py-3 rounded-full mt-10 font-bold">إرسال الطلب عبر واتساب</button>
+            <div className="mt-auto pt-4 border-t border-[#a100ff]">
+              <div className="flex justify-between text-white font-bold text-xl mb-4">
+                <span>الإجمالي:</span>
+                <span>{getTotal()} ر.س</span>
+              </div>
+              <button className="w-full bg-green-600 text-white py-3 rounded-full font-bold">طلب عبر واتساب</button>
+            </div>
           </div>
+          <div className={`cart-overlay ${cartOpen ? 'open' : ''}`} onClick={() => setCartOpen(false)}></div>
         </div>
       );
     };
